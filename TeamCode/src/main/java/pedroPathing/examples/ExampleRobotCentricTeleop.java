@@ -5,6 +5,8 @@ import android.provider.SyncStateContract;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
+import com.pedropathing.util.CustomFilteredPIDFCoefficients;
+import com.pedropathing.util.CustomPIDFCoefficients;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -22,6 +24,7 @@ import pedroPathing.constants.LConstants;
 public class ExampleRobotCentricTeleop extends OpMode {
     private Follower follower;
     private final Pose startPose = new Pose(0,0,0);
+    private boolean isHolding = false;
 
     /** This method is call once when init is played, it initializes the follower **/
     @Override
@@ -52,7 +55,21 @@ public class ExampleRobotCentricTeleop extends OpMode {
         - Robot-Centric Mode: true
         */
 
-        follower.setTeleOpMovementVectors(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+        if((Math.abs(gamepad1.left_stick_y) > 0.01) || (Math.abs(gamepad1.left_stick_x) > 0.01) || (Math.abs(gamepad1.right_stick_x) > 0.01)) {
+            if(isHolding) {
+                follower.startTeleopDrive();
+            }
+            follower.setTeleOpMovementVectors(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+            isHolding = false;
+        } else if (!isHolding && follower.getVelocity().getMagnitude() < 0.05) {
+            follower.holdPoint(follower.getPose());
+            follower.setTranslationalPIDF(new CustomPIDFCoefficients(0.2, 0.0, 0.01, 0.0));
+            follower.setDrivePIDF(new CustomFilteredPIDFCoefficients(0.1,0,0.002,0.6,0));
+            follower.setHeadingPIDF(new CustomPIDFCoefficients(3, 0.0, 0.1, 0.0));
+            isHolding = true;
+        } else {
+            follower.setTeleOpMovementVectors(0,0,0);
+        }
         follower.update();
 
         /* Telemetry Outputs of our Follower */
