@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.ActionFunction;
 import behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.BlackBoardSingleton;
 import behaviorControl.BehaviorTrees.BehaviorTreeComponents.general.Status;
-import hardwareControl.driveTrain.DriveTrainController;
+import hardwareControl.actuators.driveTrain.DriveTrainController;
 
 public class ScoreSpecimen1 implements ActionFunction
 {

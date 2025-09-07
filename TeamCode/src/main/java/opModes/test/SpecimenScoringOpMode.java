@@ -16,6 +16,7 @@ import behaviorControl.BehaviorTrees.BehaviorTree.ScoreSpecimensBehaviorTree;
 public class SpecimenScoringOpMode extends LinearOpMode
 {
     ScoreSpecimensBehaviorTree behaviorTree = null;
+    private long count =0;
 
 
     @Override
@@ -33,8 +34,9 @@ public class SpecimenScoringOpMode extends LinearOpMode
 
         while (opModeIsActive())
         {
-            telemetry.addData("SpecimenScoringOpMode", "runOpMode while started");
-            telemetry.update();
+            count++;
+          //  telemetry.addData("SpecimenScoringOpMode000", "runOpMode while started count: %d", count);
+          //  telemetry.update();
             Status result = this.behaviorTree.tick();
 
 
@@ -47,12 +49,13 @@ public class SpecimenScoringOpMode extends LinearOpMode
                 telemetry.update();
                 requestOpModeStop();
             }
+
         }
     }
 
 
     private void initialize(LinearOpMode opMode){
-        this.behaviorTree = new ScoreSpecimensBehaviorTree(hardwareMap,telemetry);
+        this.behaviorTree = new ScoreSpecimensBehaviorTree(this);
     }
 
 
